@@ -1,0 +1,902 @@
+#include<iostream>
+#include<string>
+using namespace std;
+struct category
+{
+	category *next;
+	category *pre;
+	category *nexti;
+	category *prei;
+	string name_of_category;
+	string name_of_doc;
+	string gender;
+	string office_timming;
+	string cate_of_DOCTOR;
+	string appointment_time_of_doc;
+	int no_of_appoinments;
+	int id;
+};
+struct patient
+{
+	patient *nextp;
+	patient *prep;
+	string name_of_patient;
+	int id_of_patient;
+	string appointment_time;
+	string cate_doctor;
+	string disease;
+	int fee;
+};
+class hospital_managment
+{
+private:
+	category *head;
+	category *headi;
+	category *last;
+	category *lasti;
+	int length;
+	patient *headp;
+	patient *lastp;
+	int lengthp;
+public:
+	category *newnode;
+	patient *newnode2;
+	hospital_managment()
+	{
+		head = NULL;
+		headi = NULL;
+		last = NULL;
+		length = 0;
+		headp = NULL;
+		lastp = NULL;
+		lengthp = 0;
+	}
+	void add_category(string NAME, int ID_category)
+	{
+		newnode = new category;
+		newnode->name_of_category = NAME;
+		newnode->id = ID_category;
+		if (head == NULL)
+		{
+			head = newnode;
+			newnode->next = NULL;
+			newnode->pre = NULL;
+			last = newnode;
+		}
+		else
+		{
+			last->next = newnode;
+			newnode->pre = last;
+			newnode->next = NULL;
+			last = newnode;
+		}
+		length++;
+	}
+	int delete_category(string data)
+	{
+		if (length == 0)
+		{
+			cout << "list is empty" << endl;
+		}
+		else
+		{
+			int count = 0;
+			int flag = 0;
+			char option;
+
+			category *temp = head;
+			for (int i = 0; i < length; i++)
+			{
+
+				if (temp->name_of_category == data)
+				{
+
+					flag++;
+					cout << "warning ! deleteing category will delete all its data" << endl;
+					cout << "to continue press y or x to terminate " << endl;
+					cin >> option;
+					if (option == 'y' || option == 'Y')
+					{
+
+						if (count == 0)
+						{
+							cout << "category in head" << endl;
+							category *temp3 = head;
+							head = head->next;
+							head->pre = NULL;
+							delete temp3;
+							cout << "category deleted from head" << endl;
+							length--;
+							return 0;
+						}
+						else if (count == length - 1)
+						{
+							cout << "in  last " << endl;
+							category *temp3 = last;
+							last = last->pre;
+							last->next = NULL;
+							delete temp3;
+							cout << "category deleted from last" << endl;
+							length--;
+						}
+						else
+						{
+							category *temp2;
+							category *temp1;
+							temp1 = temp->pre;
+							temp2 = temp->next;
+							temp1->next = temp2;
+							temp2->pre = temp1;
+							delete temp;
+							cout << "category deleted from mid" << endl;
+							length--;
+						}
+					}
+					else if (option == ' x' || option == 'X')
+					{
+						cout << "terminating" << endl;
+						return 0;
+					}
+				}
+				count++;
+				temp = temp->next;
+			}
+			if (flag == 0)
+			{
+				cout << "sorry! category doesn't exist" << endl;
+			}
+		}
+	}
+	int edit_category_name(int ID)
+	{
+		int count = 0;
+		string new_name_of_category;
+		category *temp = head;
+		for (int i = 0; i < length; i++)
+		{
+			if (temp->id == ID)
+			{
+				cout << "current name of category is =" << temp->name_of_category << endl;
+				cout << "pease enter the new name of category" << endl;
+				cin >> new_name_of_category;
+				temp->name_of_category = new_name_of_category;
+				return 0;
+			}
+			temp = temp->next;
+		}
+		if (count == 0)
+		{
+			cout << "There is no category with this name" << endl;
+			return 0;
+		}
+	}
+	
+	void insert_doctor(int ID, string name,string Gender,string Office_timming)
+	{
+		int count = 0;
+		category *temp = head;
+		string cate;
+		cout << "enter category of doctor" << endl;
+		cin >> cate;
+		for (int i = 0; i < length; i++)
+		{
+			if (temp->name_of_category == cate)
+			{
+				newnode = new category;
+				newnode->name_of_doc = name;
+				newnode->id = ID;
+				newnode->gender = Gender;
+				newnode->office_timming = Office_timming;
+				newnode->cate_of_DOCTOR = cate;
+				newnode->no_of_appoinments = 0;
+				if (headi == NULL)
+
+				{
+					headi = newnode;
+					newnode->nexti = NULL;
+					newnode->prei = NULL;
+					lasti = newnode;
+					cout << "Doctor details added successfully" << endl;
+					count++;
+
+				}
+				else
+				{
+					lasti->nexti = newnode;
+					newnode->prei = lasti;
+					newnode->nexti = NULL;
+					lasti = newnode;
+					cout << "Doctor details added successfully" << endl;
+					count++;
+				}
+			}
+			temp = temp->next;
+		}
+		if (count == 0)
+		{
+			cout << "invalid category" << endl;
+		}
+	}
+	int edit_doctor_info(int id_ofdoctor)
+	{
+		int count = 0;
+		category *temp = head;
+		category *tempi = headi;
+		for (int i = 0; i < length; i++)
+		{
+				while (tempi != NULL)
+				{
+					if (tempi->id == id_ofdoctor)
+					{
+						int option;
+						count++;
+						cout << "id found" << endl;
+						cout << "press 1 to change name of doctor                                press 2 to change id of doctor" << endl;
+						cout << "press 3 to change office timming                                press 4 to change gender      " << endl;
+						cin >> option;
+						if (option == 1)
+						{
+							string new_name_of_doctor;
+							cout << "please enter the new name=";
+							cin >> new_name_of_doctor;
+							tempi->name_of_doc = new_name_of_doctor;
+							cout << "successfully edited" << endl;
+							return 0;
+						}
+						else if (option == 2)
+						{
+							int new_id_of_doctor;
+							cout << "please enter the new id =";
+							cin >> new_id_of_doctor;
+							tempi->id = new_id_of_doctor;
+							cout << "successfully edited" << endl;
+							return 0;
+						}
+						else if (option == 3)
+						{
+							int new_office_timming;
+							cout << "please enter new office timming of doctor=";
+							cin >> new_office_timming;
+							tempi->office_timming = new_office_timming;
+							cout << "successfully edited" << endl;
+							return 0;
+						}
+						else if (option == 4)
+						{
+							string new_gender;
+							cout << " enter new  gender of doctor" << endl;
+							cin >> new_gender;
+							tempi->gender = new_gender;
+							cout << "successfully edited" << endl;
+							return 0;
+						}
+						else
+						{
+							cout << "invalid key";
+							return 0;
+						}
+					}
+					tempi = tempi->nexti;
+			}
+			temp = temp->next;
+
+		}
+		if (count == 0)
+		{
+			cout << "invalid id" << endl;
+		}
+	}
+	int search_doctor(int id)
+	{
+		category* temp = head;
+		category *tempi = headi;
+		for (int i = 0; i < length; i++)
+		{
+			while (tempi != NULL)
+			{
+				if (tempi->id == id)
+				{
+					cout << "id found" << endl;
+					cout << "name of doctor" << tempi->name_of_doc << endl;
+					cout << "id of doctor" << tempi->id << endl;
+					cout << "gender of doctor" << tempi->gender << endl;
+					cout << "office timming of doctor" << tempi->office_timming;
+					return 0;
+				}
+				tempi = tempi->nexti;
+			}
+			temp = temp->next;
+		}
+	}
+	int delete_doctor(int id)
+	{
+		int count = 0;
+		category* temp = head;
+		category *tempi = headi;
+		for (int i = 0; i < length; i++)
+		{
+			while (tempi != NULL)
+			{
+				category *check = tempi;
+				if (tempi->id == id)
+				{
+					if (count == 0)
+					{
+						cout << "id in head" << endl;
+						category *temp3 = headi;
+						headi = headi->nexti;
+						headi->prei = NULL;
+						delete temp3;
+						cout << "category deleted from head" << endl;
+						return 0;
+					}
+					else if (check->nexti == NULL)
+					{
+						cout << "in  last " << endl;
+						category *temp3 = lasti;
+						lasti = lasti->prei;
+						lasti->nexti = NULL;
+						delete temp3;
+						cout << "category deleted from last" << endl;
+						return 0;
+					}
+					else
+					{
+						category *temp4;
+						category *temp5;
+						temp4 = tempi->prei;
+						temp5 = tempi->nexti;
+						temp4->nexti = temp5;
+						temp5->prei = temp4;
+						delete tempi;
+						cout << "category deleted" << endl;
+						return 0;
+					}
+				}
+
+				tempi = tempi->nexti;
+				count++;
+			}
+			temp = temp->next;
+		}
+	}
+	void add_patient(string patient_name, int patient_id, string name_of_doc,string disease_of_patient)
+	{
+		newnode2 = new patient;
+		newnode2->id_of_patient = patient_id;
+		newnode2->name_of_patient = patient_name;
+		newnode2->cate_doctor = name_of_doc;
+		newnode2->disease = disease_of_patient;
+		if (headp == NULL)
+		{
+			headp = newnode2;
+			newnode2->nextp = NULL;
+			newnode2->prep = NULL;
+			lastp = newnode2;
+			
+		}
+		else
+		{
+			lastp->nextp = newnode2;
+			newnode2->prep = lastp;
+			newnode2->nextp = NULL;
+			lastp = newnode2;
+			
+		}
+		lengthp++;
+	}
+	int edit_patient(int Id_OF_patient)
+	{
+		string new_name;
+		int new_id;
+		patient *temp = headp;
+		for (int i = 0; i < lengthp; i++)
+		{
+			if (temp->id_of_patient == Id_OF_patient)
+			{
+				int option;
+				cout << "ID matched" << endl;
+				cout << "press 1 to change name of patient                            press 2 to change id of patient" << endl;
+				cout << "press 3 to change disease name                               press 4 to refer doctor name     " << endl;
+				cin >> option;
+				if (option == 1)
+				{
+					cout << "please enter new name" << endl;
+					cin >> new_name;
+					temp->name_of_patient = new_name;
+					cout << "successfully changed" << endl;
+					return 0;
+				}
+				else 	if (option == 2)
+				{
+					cout << "please enter new id" << endl;
+					cin >> new_id;
+					temp->id_of_patient = new_id;
+					cout << "successfully changed" << endl;
+					return 0;
+				}
+				else if (option == 3)
+				{
+					string diease_name;
+					cout << "enter new disease name" << endl;
+					cin >> diease_name;
+					temp->disease = diease_name;
+					cout << "successfully changed" << endl;
+					return 0;
+				}
+				else if (option == 4)
+				{
+					string new_doctor;
+					cout << "enter doctor category name" << endl;
+					cin >> new_doctor;
+					temp->cate_doctor = new_doctor;
+					cout << "successfully changed" << endl;
+					return 0;
+				}
+				
+				
+			}
+			temp = temp->nextp;
+		}
+	}
+	void display_category()
+	{
+		category *temp = head;
+		for (int i = 0; i < length; i++)
+		{
+			cout << temp->name_of_category << endl;
+			temp = temp->next;
+		}
+	}
+	int doctor_appoint_time(string cate_ofdoctor, string patient_time)
+	{
+		cout << cate_ofdoctor;
+		cout << patient_time;
+		int count = 0;
+		category *temp = head;
+		for (int i = 0; i < length; i++)
+		{
+			if (temp->name_of_category == cate_ofdoctor)
+			{
+				cout << "category found" << endl;
+				count++;
+				category *temp2 = temp;
+				temp2 = headi;
+				while (temp2 != NULL)
+				{
+
+					if (temp2->no_of_appoinments != 5)
+					{
+
+						cout <<"name of doctor="<< temp2->name_of_doc << endl;
+						temp2->appointment_time_of_doc = patient_time;
+						temp2->no_of_appoinments++;
+						return 0;
+					}
+					temp2 = temp2->nexti;
+				}
+			}
+			temp = temp->next;
+		}
+		if (count == 0)
+		{
+			cout << "category doesn't exists" << endl;
+			return 0;
+		}
+	}
+	int book_appointment()
+	{
+		patient *temp = headp;
+		int id_to_search;
+		string appoinment_time;
+		cout << "please enter the ID of patient" << endl;
+		cin >> id_to_search;
+		int fee=0;
+		
+		for (int i = 0; i < length; i++)
+		{
+			if (temp->id_of_patient == id_to_search)
+			{
+				cout << "patient is registered" << endl;
+				cout << "enter the appointment time " << endl;
+				cin >> appoinment_time;
+				temp->appointment_time = appoinment_time;
+				cout << "fee given by the patient" << endl;
+				cin >> fee;
+				if (fee == 0)
+				{
+					return 0;
+				}
+				doctor_appoint_time(temp->cate_doctor, appoinment_time);
+				cout << "Appoinment time added " << endl;
+			}
+			temp = temp->nextp;
+		}
+	}
+	int drop_patient(int ID_OF_PATIENT)
+	{
+		if (lengthp == 0)
+		{
+			cout << "list is empty" << endl;
+		}
+		else
+		{
+			int count = 0;
+			int flag = 0;
+			char option;
+
+			patient *temp = headp;
+			for (int i = 0; i < lengthp; i++)
+			{
+
+				if (temp->id_of_patient == ID_OF_PATIENT)
+				{
+
+					if (count == 0)
+					{
+						cout << "patient in head" << endl;
+						patient *temp3 = headp;
+						headp = headp->nextp;
+						headp->prep = NULL;
+						delete temp3;
+						cout << "category deleted from head" << endl;
+						lengthp--;
+						return 0;
+					}
+					else if (count == lengthp - 1)
+					{
+						cout << "in  last " << endl;
+						patient *temp3 = lastp;
+						lastp = lastp->prep;
+						lastp->nextp = NULL;
+						delete temp3;
+						cout << "category deleted from last" << endl;
+						lengthp--;
+						return 0;
+					}
+					else
+					{
+						patient *temp2;
+						patient *temp1;
+						temp1 = temp->prep;
+						temp2 = temp->nextp;
+						temp1->nextp = temp2;
+						temp2->prep = temp1;
+						delete temp;
+						cout << "category deleted from mid" << endl;
+						lengthp--;
+						return 0;
+					}
+				}
+				count++;
+				temp = temp->nextp;
+			}
+		}
+	}
+	int search_patient(int id)
+	{
+		int count = 0;
+		if (lengthp == 0)
+		{
+			cout << "there is no record for patients" << endl;
+			return 0;
+		}
+		else
+		{
+
+			patient *temp = headp;
+			for (int i = 0; i < lengthp; i++)
+			{
+				if (temp->id_of_patient == id)
+				{
+					count++;
+					cout << "id matched" << endl;
+					cout << temp->name_of_patient << endl;
+					cout << temp->cate_doctor << endl;
+					return 0;
+				}
+				temp = temp->nextp;
+			}
+		}
+		if (count == 0)
+		{
+			cout << "patient not found" << endl;
+		}
+	}
+	void display_patient()
+	{
+		int count = 0;
+		patient *temp = headp;
+		if (lengthp == 0)
+		{
+			cout << "No regestered patient " << endl;
+		}
+		else
+		{
+			for (int i = 0; i < lengthp; i++)
+			{
+			 count++;
+				cout << "name of patient=" << temp->name_of_patient << endl;
+				cout << "id of patient=" << temp->id_of_patient << endl;
+				cout << "disease of patient=" << temp->disease << endl;
+				cout << "refer doctor name==" << temp->cate_doctor << endl;
+				cout << endl;
+				temp=temp->nextp;
+			}
+		}
+
+	}
+	void display_all_doctor()
+	{
+		int count = 0;
+		category* temp = head;
+		category *tempi = headi;
+		for (int i = 0; i < length; i++)
+		{
+		
+			while (tempi != NULL)
+			{
+				count++;
+				    cout << "category of doctor="<<tempi->cate_of_DOCTOR << endl;
+					cout <<"id of doctor="<< tempi->id << endl;
+					cout <<"name of doctor="<< tempi->name_of_doc << endl;
+					cout << "gender of doctor=" << tempi->gender << endl;
+					cout << "office timming=" << tempi->office_timming;
+					cout << "total no of Appoinments " << tempi->no_of_appoinments << endl;
+				    tempi = tempi->nexti;
+			}
+			temp = temp->next;
+		}
+		cout << "total number of doctors=" << count << endl;
+	}
+	void display_doctor(int categories_id)
+	{
+		category *temp=head;
+		category *tempi = headi;
+		for (int i = 0; i < length; i++)
+		{
+			if (temp->id == categories_id)
+			{
+				cout << "category exist" << endl;
+				while (tempi!= NULL)
+				{
+					cout << "name="<<tempi->name_of_doc << endl;
+					cout <<"ID ="<< tempi->id << endl;
+					cout << "gender=" << tempi->gender << endl;
+					cout << "CATEGORY OF DOCTOR="<<tempi->cate_of_DOCTOR << endl;
+					tempi = tempi->nexti;
+				}
+
+			}
+			temp = temp->next;
+		}
+	}
+};
+int main()
+{
+	int count_for_login = 0;
+	string username;
+	int password;
+	do{
+		cout << "enter username=";
+		cin >> username;
+		cout << endl;
+		cout << "enter password=";
+		cin >> password;
+		cout << endl;
+		if (username == "manager" && password == 12345)
+		{
+			count_for_login=0;
+
+			int button;
+			char o;
+			int enter_patient_maneu;
+			hospital_managment h1;
+			do
+			{
+
+				cout << "                  Welcome To Hospital Managment System   " << endl;
+
+				cout << "||   press 1 to add a new category                      press 2 to delete category         ||" << endl;
+				cout << "||   press 3 to edit category name                      press 4 to add doctor details      ||" << endl;
+				cout << "||   press 5 to edit doctor details                     press 6 to search doctor details   ||" << endl;
+				cout << "||   press 7 to delete doctor                           press 8 to add patient             ||" << endl;
+				cout << "||   press 9 to display patient                         press 10 to edit patient details   ||" << endl;
+				cout << "||   press 11 to add Appointment time                   press 12 drop patient              ||" << endl;
+				cout << "||   press 13 search patient                            press 14 display specific doctor   ||" << endl;
+				cout << "||   press 15 to display  all doctors                                                      ||" << endl;
+				cout << "                                 press 0 to exit                                            " << endl;
+				cin >> button;
+
+				if (button == 1)
+				{
+					string name_of_category;
+					int id_category;
+					cout << "please enter a new category=";
+					cin >> name_of_category;
+					cout << endl;
+					cout << "please enter the id of category=";
+					cin >> id_category;
+					h1.add_category(name_of_category, id_category);
+					cout << "category added" << endl;
+				}
+				else if (button == 2)
+				{
+					int y;
+					int count = 0;
+					int manger_id;
+					string category_to_delete;
+					cout << "please enter you ID number" << endl;
+					cin >> manger_id;
+
+					if (manger_id == 12345)
+					{
+						cout << "id matched" << endl;
+						cout << "please enter the category you want to delete" << endl;
+						cin >> category_to_delete;
+						h1.delete_category(category_to_delete);
+					}
+					else
+					{
+						count++;
+						cout << "invalid ID" << endl;
+						if (count > 3)
+						{
+							cout << "no of wrong entries exceded" << endl;
+							cout << "terminating" << endl;
+							count = 0;
+							return 0;
+						}
+					}
+
+				}
+				else if (button == 3)
+				{
+
+					int password;
+					int id_of_category;
+					int count = 0;
+					cout << "please enter your password" << endl;
+					cin >> password;
+					if (password == 12345)
+					{
+						cout << "please enter the ID of category you want to change" << endl;
+						cin >> id_of_category;
+						h1.edit_category_name(id_of_category);
+					}
+					else
+					{
+						count++;
+						cout << "invalid ID" << endl;
+						if (count >= 3)
+						{
+							cout << "no of wrong entries exceded" << endl;
+							cout << "terminating" << endl;
+							count = 0;
+							return 0;
+						}
+					}
+				}
+				else if (button == 4)
+				{
+					int id_of_doctor;
+					string name_of_doctor;
+					string gender;
+					string office_timming;
+					cout << "enter id of doctor" << endl;
+					cin >> id_of_doctor;
+					cout << "enter name of doctor" << endl;
+					cin >> name_of_doctor;
+					cout << "enter gender of doctor" << endl;
+					cin >> gender;
+					cout << "enter office timmine of doctor (xxPM/AM_xxPM/AM)" << endl;
+					cin >> office_timming;
+					h1.insert_doctor(id_of_doctor, name_of_doctor,gender,office_timming);
+					
+				}
+				else if (button == 5)
+				{
+					int id_ofdoctors;
+					cout << "please enter the id of doctor" << endl;
+					cin >> id_ofdoctors;
+					h1.edit_doctor_info(id_ofdoctors);
+					cout << "doctor info edited successfully" << endl;
+				}
+				else if (button == 6)
+				{
+					int search_to_id;
+					cout << "please enter the id of doctor" << endl;
+					cin >> search_to_id;
+					h1.search_doctor(search_to_id);
+				}
+				else if (button == 7)
+				{
+					int id_to_delete;
+					cout << "please enter the id of doctor" << endl;
+					cin >> id_to_delete;
+					h1.delete_doctor(id_to_delete);
+				}
+				else if (button == 8)
+				{
+					string name_ofpatient;
+					int id_of_patient;
+					string refer_doc;
+					string disease;
+
+					cout << "please enter the name of patient" << endl;
+					cin >> name_ofpatient;
+					cout << "please enter the id of patient" << endl;
+					cin >> id_of_patient;
+					cout << "please enter the refer doctor" << endl;
+					cin >> refer_doc;
+					cout << "patient disease=" << endl;
+					cin >> disease;
+					h1.add_patient(name_ofpatient, id_of_patient, refer_doc,disease);
+				}
+				else if (button == 9)
+				{
+					cout << "displaying all patient" << endl;
+					h1.display_patient();
+				}
+				else if (button == 10)
+				{
+					int Id;
+					cout << "please enter the id of patient" << endl;
+					cin >> Id;
+					h1.edit_patient(Id);
+				}
+				else if (button == 11)
+				{
+					h1.book_appointment();
+				}
+				else if (button == 12)
+				{
+					int id_ofpatient;
+					cout << "enter the patient id " << endl;
+					cin >> id_ofpatient;
+					h1.drop_patient(id_ofpatient);
+				}
+				else if (button == 13)
+				{
+					int id_tosearch;
+					cout << "enter the id of patient" << endl;
+					cin >> id_tosearch;
+					h1.search_patient(id_tosearch);
+				}
+				else if (button == 14)
+				{
+					int category_id_to_search;
+					cout << "enter id of category" << endl;
+					cin >> category_id_to_search;
+					h1.display_doctor(category_id_to_search);
+
+				}
+				else if (button == 0)
+				{
+					cout << "terminating" << endl;
+					return 0;
+				}
+				else if (button == 15)
+				{
+					h1.display_all_doctor();
+				}
+				cout << "press Y to return to main or X to terminate" << endl;
+				cin >> o;
+			} while (o != 'x' );
+			if (o == 'x')
+			{
+				return 0;
+			}
+		}
+		else
+		{
+			cout << "invalid key" << endl;
+			count_for_login++;
+		}
+	}while (count_for_login < 3);
+	if (count_for_login >= 3)
+	{
+		cout << "no of wrong entries exceeded" << endl;
+		return 0;
+	}
+}
